@@ -278,7 +278,7 @@ Then open `http://localhost:8080` in your web browser.
 >  
 > **Group Details:**  
 > - **Group Number:** Group XX  
-> - **GitHub Repository:** `<INSERT_GITHUB_LINK_HERE>`  
+> - **GitHub Repository:** `https://github.com/AryanKarmore/santas-warehouse-of-wonders`  
 >  
 > **Member Roster & Contributions:**  
 > 1. **Aryan** — Warehouse Environment & Problem Formulation (Tasks 1 & 2)  
