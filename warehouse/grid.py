@@ -1,7 +1,7 @@
 """
 warehouse/grid.py
 Task 1 & Task 2: Warehouse Environment & Problem Formulation
-Author: Person 1 - Aryan
+Author: Person 1 - Aryan [BT24CSD009]
 
 This module defines the 2D warehouse grid environment and the formal AI search
 problem formulation (State, Initial State, Actions, Transition Model, Goal Test,

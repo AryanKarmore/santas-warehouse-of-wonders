@@ -10,13 +10,13 @@
 
 ## 👥 Group Members & Division of Responsibilities
 
-| Member | Name | Primary Role & Responsibility | Core Tasks & Code Modules |
-| :---: | :---: | :--- | :--- |
-| **Person 1** | **Aryan** | **Warehouse Grid & Search Problem Formulation** | Task 1 & Task 2: Formal state space, transition model, cost matrices, ASCII grid rendering (`warehouse/grid.py`). |
-| **Person 2** | **Atharv** | **Uninformed Search Algorithms (BFS & DFS)** | Task 3 (Part 1): Breadth-First Search (shortest moves guarantee) and Depth-First Search with visited set cycle prevention (`warehouse/algorithms.py`). |
-| **Person 3** | **Aditya** | **Greedy Best-First Search & Heuristic Formulation** | Task 3 (Part 2): Greedy Best-First Search, Manhattan distance heuristic design, mathematical proofs for admissibility and consistency (`warehouse/algorithms.py`). |
-| **Person 4** | **GOAT** | **A* Search & Weighted Cost Optimization** | Task 3 (Part 3): A* priority queue graph search, cost optimization, Task 3 dilemma (short crowded vs. long cheap route) (`warehouse/algorithms.py`). |
-| **Person 5** | **ESHAN** | **Dynamic Trolley Replanner, 3D Web UI & Benchmarks** | Task 4 & Task 5: Real-time sensor scanning, A* dynamic replanning, trapped edge case, benchmark suite, Matplotlib figures, and interactive Three.js 3D Digital Twin (`warehouse/replanner.py`, `warehouse/benchmark.py`, `warehouse/visualizer.py`, `web_3d/`). |
+| Member | Name | Roll Number | Primary Role & Responsibility | Core Tasks & Code Modules |
+| :---: | :---: | :---: | :--- | :--- |
+| **Person 1** | **Aryan** | **BT24CSD009** | **Warehouse Grid & Search Problem Formulation** | Task 1 & Task 2: Formal state space, transition model, cost matrices, ASCII grid rendering (`warehouse/grid.py`). |
+| **Person 2** | **Atharv** | **BT24CSD004** | **Uninformed Search Algorithms (BFS & DFS)** | Task 3 (Part 1): Breadth-First Search (shortest moves guarantee) and Depth-First Search with visited set cycle prevention (`warehouse/algorithms.py`). |
+| **Person 3** | **Aditya** | **BT24CSD018** | **Greedy Best-First Search & Heuristic Formulation** | Task 3 (Part 2): Greedy Best-First Search, Manhattan distance heuristic design, mathematical proofs for admissibility and consistency (`warehouse/algorithms.py`). |
+| **Person 4** | **Raveena** | **BT24CSD022** | **A* Search & Weighted Cost Optimization** | Task 3 (Part 3): A* priority queue graph search, cost optimization, Task 3 dilemma (short crowded vs. long cheap route) (`warehouse/algorithms.py`). |
+| **Person 5** | **Eshan** | **BT24CSD012** | **Dynamic Trolley Replanner, 3D Web UI & Benchmarks** | Task 4 & Task 5: Real-time sensor scanning, A* dynamic replanning, trapped edge case, benchmark suite, Matplotlib figures, and interactive Three.js 3D Digital Twin (`warehouse/replanner.py`, `warehouse/benchmark.py`, `warehouse/visualizer.py`, `web_3d/`). |
 
 ---
 
@@ -269,13 +269,13 @@ Then open `http://localhost:8080` in your web browser.
 - **Q: What is the weakness of Greedy Best-First Search?**  
   *Answer:* It prioritizes nodes solely based on $h(n)$, completely ignoring accumulated cost $g(n)$. This makes it vulnerable to stepping into high-cost crowded cells or getting stuck in dead ends.
 
-### Person 4: GOAT (A* & Weighted Path Costs)
+### Person 4: Raveena (BT24CSD022) (A* & Weighted Path Costs)
 - **Q: How does A* resolve the dilemma between a short crowded route and a long cheap detour?**  
   *Answer:* A* minimizes $f(n) = g(n) + h(n)$. For the short crowded corridor, $g(n)$ accumulates $4 \times 4 = 16$. For the longer open detour, $g(n)$ accumulates $7 \times 1 = 7$. Because $7 < 16$, A* correctly chooses the longer, less costly route.
 - **Q: Why doesn't A* need to reopen closed nodes in our implementation?**  
   *Answer:* Because Manhattan distance satisfies consistency (triangle inequality $|h(n) - h(n')| \le 1.0 \le c(n, a, n')$), the first time A* expands any node, it has already found the optimal cost to that node.
 
-### Person 5: ESHAN (Dynamic Replanning, 3D Web UI & Benchmarks)
+### Person 5: Eshan (BT24CSD012) (Dynamic Replanning, 3D Web UI & Benchmarks)
 - **Q: How does the robot detect the trolley before colliding with it?**  
   *Answer:* At each step, the robot simulates a forward proximity scan of the next cell in its planned path. If the ground truth map has a trolley at that location, the robot halts, updates its internal map, and triggers A* from its current coordinates.
 - **Q: What happens if the trolley leaves no alternative path to the goal?**  
@@ -297,13 +297,13 @@ Then open `http://localhost:8080` in your web browser.
 > - **GitHub Repository:** `https://github.com/AryanKarmore/santas-warehouse-of-wonders`  
 >  
 > **Member Roster & Contributions:**  
-> 1. **Aryan** — Warehouse Environment & Problem Formulation (Tasks 1 & 2)  
-> 2. **Atharv** — BFS & DFS Graph Search Implementation (Task 3)  
-> 3. **Aditya** — Greedy Best-First Search & Manhattan Distance Heuristic Proof (Task 3)  
-> 4. **GOAT** — A* Search & Weighted Path Cost Analysis (Task 3)  
-> 5. **ESHAN** (Group Representative) — Trolley Replanning, Benchmarking, Performance Evaluation & Three.js 3D Digital Twin (Tasks 4 & 5)  
+> 1. **Aryan (BT24CSD009)** — Warehouse Environment & Problem Formulation (Tasks 1 & 2)  
+> 2. **Atharv (BT24CSD004)** — BFS & DFS Graph Search Implementation (Task 3)  
+> 3. **Aditya (BT24CSD018)** — Greedy Best-First Search & Manhattan Distance Heuristic Proof (Task 3)  
+> 4. **Raveena (BT24CSD022)** — A* Search & Weighted Path Cost Analysis (Task 3)  
+> 5. **Eshan (BT24CSD012)** (Group Representative) — Trolley Replanning, Benchmarking, Performance Evaluation & Three.js 3D Digital Twin (Tasks 4 & 5)  
 >  
 > All source code, automated test suites, Matplotlib figures, and the interactive Three.js 3D Digital Twin are included in the repository.  
 >  
 > Sincerely,  
-> Group XX Representative (ESHAN)
+> Group XX Representative (Eshan)

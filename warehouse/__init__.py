@@ -1,11 +1,11 @@
 """
 AI Warehouse Delivery Robot - Route Planning Package
 Developed by:
-  - Person 1: Aryan  (Warehouse Grid & Problem Formulation)
-  - Person 2: Atharv (BFS & DFS Implementation)
-  - Person 3: Aditya (Greedy Best-First Search & Heuristic Formulation)
-  - Person 4: GOAT   (A* Search & Weighted Path Costs)
-  - Person 5: ESHAN  (Trolley Detection, Replanning, Benchmarking & 3D Visualization)
+  - Person 1: Aryan   [BT24CSD009] (Warehouse Grid & Problem Formulation)
+  - Person 2: Atharv  [BT24CSD004] (BFS & DFS Implementation)
+  - Person 3: Aditya  [BT24CSD018] (Greedy Best-First Search & Heuristic Formulation)
+  - Person 4: Raveena [BT24CSD022] (A* Search & Weighted Path Costs)
+  - Person 5: Eshan   [BT24CSD012] (Trolley Detection, Replanning, Benchmarking & 3D Visualization)
 """
 
 from .grid import WarehouseGrid, CellType, SearchNode

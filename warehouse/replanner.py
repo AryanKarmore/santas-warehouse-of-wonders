@@ -1,7 +1,7 @@
 """
 warehouse/replanner.py
 Task 4: Obstacle Detection & Dynamic Replanning
-Author: Person 5 - ESHAN
+Author: Person 5 - Eshan [BT24CSD012]
 
 This module simulates real-time robot navigation under uncertainty.
 The robot executes an initial A* plan. When an unmapped obstacle (Trolley)

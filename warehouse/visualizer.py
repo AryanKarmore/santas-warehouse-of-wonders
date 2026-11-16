@@ -1,7 +1,7 @@
 """
 warehouse/visualizer.py
 Visualizer & Figure Generator for Reports and Screenshots
-Author: Person 5 - ESHAN
+Author: Person 5 - Eshan [BT24CSD012]
 
 Generates publication-quality Matplotlib figures of warehouse search paths,
 cost-vs-length trade-offs, performance metric bar charts, and trolley replanning.

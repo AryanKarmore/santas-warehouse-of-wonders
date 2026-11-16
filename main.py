@@ -2,11 +2,11 @@
 main.py
 AI Warehouse Route Planning - Interactive Command-Line Interface
 Contributors:
-  - Person 1: Aryan  (Warehouse Grid & Problem Formulation)
-  - Person 2: Atharv (BFS & DFS Implementation)
-  - Person 3: Aditya (Greedy Best-First & Heuristic Formulation)
-  - Person 4: GOAT   (A* Implementation & Weighted Path Cost Analysis)
-  - Person 5: ESHAN  (Trolley Replanning, Performance Evaluation & 3D UI)
+  - Person 1: Aryan   [BT24CSD009] (Warehouse Grid & Problem Formulation)
+  - Person 2: Atharv  [BT24CSD004] (BFS & DFS Implementation)
+  - Person 3: Aditya  [BT24CSD018] (Greedy Best-First & Heuristic Formulation)
+  - Person 4: Raveena [BT24CSD022] (A* Implementation & Weighted Path Cost Analysis)
+  - Person 5: Eshan   [BT24CSD012] (Trolley Replanning, Performance Evaluation & 3D UI)
 """
 
 import sys
@@ -48,11 +48,11 @@ def print_banner():
            Autonomous Pathfinding & Dynamic Replanning
 ================================================================================
   Team Roster & Contributions:
-    [1] Aryan  - Warehouse Environment & State Space Formulation
-    [2] Atharv - BFS and DFS Graph Search Algorithms
-    [3] Aditya - Greedy Best-First Search & Manhattan Distance Admissibility
-    [4] GOAT   - A* Algorithm & Weighted Cost Optimization
-    [5] ESHAN  - Dynamic Trolley Detection, Real-Time Replanning & 3D Web UI
+    [1] Aryan   [BT24CSD009] - Warehouse Environment & State Space Formulation
+    [2] Atharv  [BT24CSD004] - BFS and DFS Graph Search Algorithms
+    [3] Aditya  [BT24CSD018] - Greedy Best-First Search & Manhattan Distance Admissibility
+    [4] Raveena [BT24CSD022] - A* Algorithm & Weighted Cost Optimization
+    [5] Eshan   [BT24CSD012] - Dynamic Trolley Detection, Real-Time Replanning & 3D Web UI
 ================================================================================
 """
     print(banner)

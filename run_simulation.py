@@ -1,7 +1,7 @@
 """
 run_simulation.py
 Automated Simulation Runner & Artifact Generator
-Author: Person 5 - ESHAN
+Author: Person 5 - Eshan [BT24CSD012]
 
 Executes the entire suite of warehouse simulations, prints formatted comparison
 tables, answers all problem statement questions, generates Matplotlib figures
@@ -39,11 +39,11 @@ def run_and_export():
     print("AI WAREHOUSE ROBOT ROUTE PLANNING - FULL SIMULATION & EVALUATION")
     print("=" * 80)
     print("Group Members & Responsibilities:")
-    print("  * Person 1: Aryan  - Warehouse Grid & Search Problem Formulation (Tasks 1 & 2)")
-    print("  * Person 2: Atharv - BFS and DFS Search Implementations (Task 3)")
-    print("  * Person 3: Aditya - Greedy Best-First Search & Manhattan Heuristic (Task 3)")
-    print("  * Person 4: GOAT   - A* Implementation & Weighted Path Cost Analysis (Task 3)")
-    print("  * Person 5: ESHAN  - Dynamic Trolley Replanning, Benchmarking & 3D UI (Tasks 4 & 5)")
+    print("  * Person 1: Aryan   [BT24CSD009] - Warehouse Grid & Search Problem Formulation (Tasks 1 & 2)")
+    print("  * Person 2: Atharv  [BT24CSD004] - BFS and DFS Search Implementations (Task 3)")
+    print("  * Person 3: Aditya  [BT24CSD018] - Greedy Best-First Search & Manhattan Heuristic (Task 3)")
+    print("  * Person 4: Raveena [BT24CSD022] - A* Implementation & Weighted Path Cost Analysis (Task 3)")
+    print("  * Person 5: Eshan   [BT24CSD012] - Dynamic Trolley Replanning, Benchmarking & 3D UI (Tasks 4 & 5)")
     print("=" * 80)
 
     figures_dir = os.path.join(os.path.dirname(__file__), "docs", "figures")

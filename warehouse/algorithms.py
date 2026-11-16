@@ -2,9 +2,9 @@
 warehouse/algorithms.py
 Task 3: Search Algorithms (BFS, DFS, Greedy Best-First, A*) & Heuristic Analysis
 Authors:
-  - Person 2: Atharv (BFS and DFS implementation)
-  - Person 3: Aditya (Greedy Best-First Search & Manhattan Distance Heuristic)
-  - Person 4: GOAT   (A* Implementation & Weighted Path Cost Analysis)
+  - Person 2: Atharv  [BT24CSD004] (BFS and DFS implementation)
+  - Person 3: Aditya  [BT24CSD018] (Greedy Best-First Search & Manhattan Distance Heuristic)
+  - Person 4: Raveena [BT24CSD022] (A* Implementation & Weighted Path Cost Analysis)
 
 This module implements the four core search algorithms on the 2D warehouse grid.
 Every algorithm tracks performance metrics: goal reached, path length (moves),
@@ -48,7 +48,7 @@ class SearchResult:
 
 
 # =====================================================================
-# Heuristic Formulation (Person 3 - Aditya)
+# Heuristic Formulation (Person 3 - Aditya [BT24CSD018])
 # =====================================================================
 
 def manhattan_distance(p1: Tuple[int, int], p2: Tuple[int, int]) -> float:
@@ -81,13 +81,13 @@ def manhattan_distance(p1: Tuple[int, int], p2: Tuple[int, int]) -> float:
 
 
 # =====================================================================
-# Uninformed Search Algorithms (Person 2 - Atharv)
+# Uninformed Search Algorithms (Person 2 - Atharv [BT24CSD004])
 # =====================================================================
 
 def breadth_first_search(grid: WarehouseGrid) -> SearchResult:
     """
     Breadth-First Search (BFS)
-    Implemented by: Atharv (Person 2)
+    Implemented by: Atharv [BT24CSD004] (Person 2)
 
     Explores nodes level-by-level using a FIFO queue.
     Properties:
@@ -151,7 +151,7 @@ def breadth_first_search(grid: WarehouseGrid) -> SearchResult:
 def depth_first_search(grid: WarehouseGrid) -> SearchResult:
     """
     Depth-First Search (DFS)
-    Implemented by: Atharv (Person 2)
+    Implemented by: Atharv [BT24CSD004] (Person 2)
 
     Explores deepest nodes first using a LIFO stack.
     Properties:
@@ -215,13 +215,13 @@ def depth_first_search(grid: WarehouseGrid) -> SearchResult:
 
 
 # =====================================================================
-# Informed Heuristic Search Algorithms (Aditya & GOAT)
+# Informed Heuristic Search Algorithms (Aditya & Raveena)
 # =====================================================================
 
 def greedy_best_first_search(grid: WarehouseGrid) -> SearchResult:
     """
     Greedy Best-First Search
-    Implemented by: Aditya (Person 3)
+    Implemented by: Aditya [BT24CSD018] (Person 3)
 
     Evaluates nodes purely by heuristic value: f(n) = h(n) = Manhattan Distance.
     Properties:
@@ -292,7 +292,7 @@ def greedy_best_first_search(grid: WarehouseGrid) -> SearchResult:
 def a_star_search(grid: WarehouseGrid, start_pos: Optional[Tuple[int, int]] = None) -> SearchResult:
     """
     A* Search
-    Implemented by: GOAT (Person 4)
+    Implemented by: Raveena [BT24CSD022] (Person 4)
 
     Evaluates nodes by estimated total cost: f(n) = g(n) + h(n)
       - g(n): Cumulative path cost from start to n
