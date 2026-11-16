@@ -3,7 +3,8 @@
 **Submission Target:** `bmakhija@iiitn.ac.in` | **Suggested Repo Name:** `AI_Warehouse_PathPlanning_GroupXX`  
 **Deadline:** 18 November 2026
 
-![Warehouse Simulation Comparison](docs/figures/standard_warehouse_comparison.png)
+![Santa's 3D Digital Twin Overview](docs/figures/website_3d_santa_overview.png)
+*Figure 1: Interactive Three.js 3D Digital Twin — North Pole Santa Claus Expedition with Live Telemetry HUD, Twinkling Fairy Lights, and Golden Ribbon Navigation.*
 
 ---
 
@@ -163,22 +164,37 @@ Replans Attempted: 1 | Goal Reached: False
 
 ## 🌐 Three.js 3D Digital Twin (Interactive Web UI)
 
-An interactive 3D Web UI built with Three.js provides a realistic digital twin of the warehouse.
+An interactive 3D Web UI built with Three.js provides a realistic, festive digital twin of the warehouse expedition.
+
+### Website Interface Gallery
+
+| 🎅 3D Santa Close-Up | 🦌 Runaway Sleigh Dynamic Replanning |
+| :---: | :---: |
+| ![Santa Claus 3D Close-Up](docs/figures/website_3d_santa_zoomed.png) | ![Runaway Sleigh Dynamic Replanning](docs/figures/website_3d_sleigh_replanning.png) |
+| *Procedural 3D Santa with crimson suit, white beard, gold buckle & toy sack* | *Obstacle detection alert & real-time A\* dynamic detour replanning* |
+
+| 👥 Chief Code Elves Modal | 📊 Matplotlib Benchmark Comparison |
+| :---: | :---: |
+| ![Chief Code Elves Modal](docs/figures/website_3d_elves_roster.png) | ![Warehouse Comparison](docs/figures/standard_warehouse_comparison.png) |
+| *Interactive group attribution modal for all 5 team members* | *Publication 2D benchmark figure generated via Python* |
 
 ```
 web_3d/
 ├── index.html        # HTML5 layout with telemetry HUD, scenario selector, speed controls
-├── style.css         # Cyber-industrial glassmorphism dark theme
-├── app.js            # Three.js 3D engine, procedural models, Web Audio synth, live search engine
+├── style.css         # Winter wonderland glassmorphism dark theme with falling snowflakes & fairy lights
+├── app.js            # Three.js 3D engine, procedural Santa, Web Audio synth ("HO HO HO!"), live search engine
 └── sim_data.json     # Precomputed simulation traces for offline playback
 ```
 
 ### Key UI Features:
-- **Procedural 3D Models:** Industrial AGV robot with animated wheels, cargo box, and rotating LiDAR cone; detailed multi-tier warehouse shelving racks; glowing hazardous restricted zones.
-- **Dynamic Lidar & Route Ribbon:** Displays the planned path spline in glowing neon cyan/blue; animates the frontier wave of explored nodes.
-- **Live Sound Synthesizer:** Built-in Web Audio API generating motor hums, LiDAR pulses, collision alarms, and arrival chimes.
-- **Scenario & Algorithm Switcher:** Switch between Standard, Cost vs. Length, Trolley Replanning, Trapped Robot, and Custom Sandbox.
-- **Interactive Sandbox Brush Tool:** Click directly on any 3D floor tile to drop shelves, crowded zones, trolleys, or change start/goal coordinates!
+- **Procedural 3D Santa Claus Model:** Plump jolly belly, crimson coat with white fur trim, black boots with golden buckles, black leather belt, fluffy white beard & moustache, iconic red Santa hat with pom-pom, green mittens, and a giant burlap sack slung over his shoulder bulging with wrapped presents and candy canes.
+- **Dedicated Santa Spotlight & Zoom:** Follow spotlight illuminating Santa on the ice, plus a dedicated `🔍 ZOOM SANTA` button for close-up inspection.
+- **Twinkling Holiday Fairy Lights:** Multi-colored holiday bulbs (red, green, gold, blue, pink) hanging across the top navigation bar with twinkling animations.
+- **CSS & 3D Falling Snow Particles:** Dual-layer snowfall (650 3D snow particles drifting in the scene plus swaying CSS snowflake overlays across the screen).
+- **Golden Holiday Ribbon Route:** Displays the planned path spline in glowing golden holiday ribbon dotted with red Christmas ornament baubles.
+- **Embedded Web Audio Synthesizer:** Multi-harmonic jingle bells on every step, synthesized deep "HO! HO! HO!" laugh upon starting delivery, sleigh warning horns, and classic "Jingle Bells" victory fanfare.
+- **Scenario & Algorithm Switcher:** Switch between Standard, Cost vs. Length, Sleigh Replanning, Trapped Santa, and Winter Sandbox.
+- **Interactive Sandbox Brush Tool:** Click directly on any 3D floor tile to drop toy racks, deep snowdrifts, runaway sleighs, or change start/goal coordinates!
 
 ---
 

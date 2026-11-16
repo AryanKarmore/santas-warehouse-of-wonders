@@ -1661,4 +1661,23 @@ class AppController {
 // Instantiate on DOM ready
 window.addEventListener('DOMContentLoaded', () => {
   window.app = new AppController();
+
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('zoom')) {
+    setTimeout(() => window.app.scene.focusSanta(), 400);
+  }
+  if (urlParams.get('scenario')) {
+    setTimeout(() => {
+      const scen = urlParams.get('scenario');
+      const sel = document.getElementById('scenario-select');
+      if (sel) sel.value = scen;
+      window.app.switchScenario(scen);
+    }, 300);
+  }
+  if (urlParams.get('modal') === 'roster') {
+    setTimeout(() => {
+      const modal = document.getElementById('team-modal');
+      if (modal) modal.style.display = 'flex';
+    }, 400);
+  }
 });
