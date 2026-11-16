@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>🎅 Santa's North Pole Digital Twin | Christmas Route Planner & Dynamic Replanner</title>
+  <!-- Cache-busted Stylesheet -->
+  <link rel="stylesheet" href="style.css?v=santa_edition_final_10">
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&family=JetBrains+Mono:wght@400;600;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- Three.js and OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body class="christmas-theme">
+  <!-- Twinkling Christmas Fairy Lights String -->
+  <div class="christmas-lights" id="christmas-lights"></div>
+
+  <!-- CSS Snowflakes Container -->
+  <div id="snowflakes-container" aria-hidden="true"></div>
+
+  <!-- 3D Canvas Container -->
+  <div id="canvas-container"></div>
+
+  <!-- Top Navigation & Branding Bar -->
+  <header class="top-nav frosted-card">
+    <div class="brand">
+      <div class="status-indicator festive-pulse"></div>
+      <div class="brand-text">
+        <span class="system-title festive-title">🎅 SANTA'S EXPEDITION // NORTH POLE TWIN</span>
+        <span class="sub-title">✨ Santa Claus Autonomous Gift Delivery & Sleigh Replanner ✨</span>
+      </div>
+    </div>
+
+    <!-- Scenario & Algorithm Quick Toggles -->
+    <div class="nav-controls">
+      <div class="control-group frosted-control">
+        <label for="scenario-select">🎁 MISSION:</label>
+        <select id="scenario-select">
+          <option value="standard">1. Santa's Workshop Grid (12x12)</option>
+          <option value="cost_vs_length">2. Task 3: Deep Snow vs Long Cleared Path</option>
+          <option value="trolley">3. Task 4: Runaway Sleigh Obstacle & Replan</option>
+          <option value="trapped">4. Task 4: Trapped Santa (Blizzard Wall)</option>
+          <option value="custom">5. Winter Sandbox (Custom Ice Grid)</option>
+        </select>
+      </div>
+
+      <div class="control-group frosted-control">
+        <label for="algorithm-select">⭐ ALGORITHM:</label>
+        <select id="algorithm-select">
+          <option value="A*">A* Search (Lowest Effort / Optimal)</option>
+          <option value="BFS">BFS (Fewest Hops)</option>
+          <option value="Greedy Best-First">Greedy Best-First (Heuristic)</option>
+          <option value="DFS">DFS (Depth-First Exploration)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button id="btn-camera-view" class="pill-btn frosted-btn" title="Toggle Camera Perspective">
+        <span class="icon">🎥</span> <span id="camera-label">ISO 3D</span>
+      </button>
+      <button id="btn-focus-santa" class="pill-btn frosted-btn highlight-gold" title="Zoom Camera onto Santa">
+        <span class="icon">🔍</span> ZOOM SANTA
+      </button>
+      <button id="btn-test-hohoho" class="pill-btn frosted-btn highlight-festive" title="Hear Santa's HO HO HO!">
+        <span class="icon">🎅</span> HO HO HO!
+      </button>
+      <button id="btn-audio" class="pill-btn frosted-btn" title="Toggle Sound Synthesizer">
+        <span class="icon" id="audio-icon">🔔</span> JINGLES
+      </button>
+      <button id="btn-team-modal" class="pill-btn highlight-festive" title="Group Member Roles">
+        <span class="icon">🎅</span> ELVES
+      </button>
+    </div>
+  </header>
+
+  <!-- Left Floating Telemetry HUD -->
+  <aside class="hud-panel telemetry-hud frosted-card">
+    <div class="hud-header">
+      <span class="hud-title">🎅 SANTA'S TELEMETRY</span>
+      <span class="badge festive-badge" id="bot-status-badge">HO HO HO!</span>
+    </div>
+
+    <div class="hud-stats-grid">
+      <div class="stat-box">
+        <div class="stat-label">SANTA POS</div>
+        <div class="stat-value" id="hud-pos">(0, 0)</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">TERRAIN EFFORT</div>
+        <div class="stat-value" id="hud-cell-cost">1.0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">ACCUMULATED COST</div>
+        <div class="stat-value highlight-gold" id="hud-total-cost">0.0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">HOPS COMPLETED</div>
+        <div class="stat-value" id="hud-moves">0 / 0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">NODES EXPANDED</div>
+        <div class="stat-value highlight-cyan" id="hud-nodes">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">COMPUTE TIME</div>
+        <div class="stat-value" id="hud-time">0.00 ms</div>
+      </div>
+    </div>
+
+    <div class="hud-alert-box festive-alert" id="hud-alert" style="display: none;">
+      <span class="alert-icon">🦌</span>
+      <span class="alert-msg" id="hud-alert-text">RUNAWAY SLEIGH DETECTED! SANTA INITIATING A* REPLAN...</span>
+    </div>
+
+    <!-- Comparative Table Widget -->
+    <div class="comparison-widget frosted-inner">
+      <div class="widget-title">🎄 SEARCH PERFORMANCE COMPARISON</div>
+      <table class="mini-table" id="comparison-mini-table">
+        <thead>
+          <tr>
+            <th>ALGO</th>
+            <th>MOVES</th>
+            <th>COST</th>
+            <th>NODES</th>
+          </tr>
+        </thead>
+        <tbody id="comparison-tbody">
+          <!-- Populated dynamically -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Interactive Grid Tools (Active in Sandbox mode) -->
+    <div class="sandbox-tools frosted-inner" id="sandbox-tools" style="display: none;">
+      <div class="widget-title">❄️ WINTER SANDBOX BRUSH</div>
+      <div class="brush-selector">
+        <button class="brush-btn active" data-brush="shelf">🎁 Toy Rack (#)</button>
+        <button class="brush-btn" data-brush="crowded">🌨️ Deep Snow (C)</button>
+        <button class="brush-btn" data-brush="open">❄️ Clear Ice (.)</button>
+        <button class="brush-btn" data-brush="trolley">🛷 Sleigh (T)</button>
+        <button class="brush-btn" data-brush="start">🏠 Workshop (P)</button>
+        <button class="brush-btn" data-brush="goal">🌟 Tree Pad (D)</button>
+      </div>
+      <p class="help-text">Click any frosty tile to craft your custom winter maze!</p>
+    </div>
+  </aside>
+
+  <!-- Bottom Floating Playback & Control Deck -->
+  <footer class="control-deck frosted-card">
+    <div class="deck-inner">
+      <div class="playback-controls">
+        <button id="btn-reset" class="deck-btn frosted-btn" title="Reset Simulation">⏮ RESET</button>
+        <button id="btn-step-prev" class="deck-btn frosted-btn" title="Step Backward">◀ STEP</button>
+        <button id="btn-play-pause" class="deck-btn primary-festive" title="Play / Pause">▶ DELIVER</button>
+        <button id="btn-step-next" class="deck-btn frosted-btn" title="Step Forward">STEP ▶</button>
+      </div>
+
+      <div class="progress-container">
+        <span class="progress-label">JOURNEY:</span>
+        <input type="range" id="sim-progress-slider" min="0" max="100" value="0">
+        <span class="progress-counter" id="progress-text">0%</span>
+      </div>
+
+      <div class="speed-controls">
+        <span class="speed-label">SPEED:</span>
+        <button class="speed-pill" data-speed="0.5">0.5x</button>
+        <button class="speed-pill active" data-speed="1">1x</button>
+        <button class="speed-pill" data-speed="2">2x</button>
+        <button class="speed-pill" data-speed="5">5x</button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Legend Overlay -->
+  <div class="legend-panel frosted-card">
+    <div class="legend-item"><span class="legend-box open-snow"></span> Clear Ice Path (Cost 1)</div>
+    <div class="legend-item"><span class="legend-box crowded-snow"></span> Deep Snowdrift (Cost 4)</div>
+    <div class="legend-item"><span class="legend-box shelf-snow"></span> Toy Storage Rack (Impassable)</div>
+    <div class="legend-item"><span class="legend-box restricted-snow"></span> Thin Ice Pond (Impassable)</div>
+    <div class="legend-item"><span class="legend-box trolley-snow"></span> Runaway Sleigh (Obstacle)</div>
+    <div class="legend-item"><span class="legend-box start-snow"></span> Santa's Workshop (Start)</div>
+    <div class="legend-item"><span class="legend-box goal-snow"></span> Delivery Tree Pad (Goal)</div>
+  </div>
+
+  <!-- Team Roster Modal -->
+  <div class="modal-backdrop" id="team-modal" style="display: none;">
+    <div class="modal-card frosted-card">
+      <div class="modal-header">
+        <h2>🎅 SANTA'S CHIEF CODE ELVES & CONTRIBUTIONS</h2>
+        <button class="modal-close-btn" id="btn-close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="roster-grid">
+          <div class="roster-card frosted-inner">
+            <div class="roster-badge">ELF 1 (PERSON 1)</div>
+            <div class="roster-name">Aryan</div>
+            <div class="roster-role">Warehouse Grid & Problem Formulation</div>
+            <p class="roster-desc">Designed the 2D North Pole workshop grid, terrain cost matrix (Clear ice: 1, Deep snowdrift: 4), transition model, orthogonal action set, and formal state-space specification.</p>
+          </div>
+          <div class="roster-card frosted-inner">
+            <div class="roster-badge">ELF 2 (PERSON 2)</div>
+            <div class="roster-name">Atharv</div>
+            <div class="roster-role">BFS and DFS Search Implementation</div>
+            <p class="roster-desc">Implemented Breadth-First Search (guaranteeing fewest hops) and Depth-First Search with visited set cycle prevention, tracking node expansion metrics.</p>
+          </div>
+          <div class="roster-card frosted-inner">
+            <div class="roster-badge">ELF 3 (PERSON 3)</div>
+            <div class="roster-name">Aditya</div>
+            <div class="roster-role">Greedy Best-First & Heuristic Formulation</div>
+            <p class="roster-desc">Implemented Greedy Best-First Search guided by Manhattan distance. Authored mathematical proof of heuristic admissibility [h(n) &le; h*(n)] and consistency.</p>
+          </div>
+          <div class="roster-card frosted-inner">
+            <div class="roster-badge">ELF 4 (PERSON 4)</div>
+            <div class="roster-name">GOAT</div>
+            <div class="roster-role">A* Algorithm & Weighted Cost Optimization</div>
+            <p class="roster-desc">Engineered optimal A* search with priority queue tracking f(n) = g(n) + h(n). Proved why A* chooses longer cleared detours over short deep-snow bottlenecks.</p>
+          </div>
+          <div class="roster-card frosted-inner highlighted-festive">
+            <div class="roster-badge">CHIEF ELF (PERSON 5)</div>
+            <div class="roster-name">ESHAN</div>
+            <div class="roster-role">Dynamic Replanner, Christmas 3D Twin & Benchmarks</div>
+            <p class="roster-desc">Developed real-time sensory sleigh detection, instant A* dynamic replanning, trapped edge case handling, benchmark suite, and the 3D Christmas Santa Digital Twin.</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span>Assignment: AI-Based Route Planning for a Warehouse Delivery Robot</span>
+        <span>Submission Deadline: 18 November 2026</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Application Script with Cache-Buster -->
+  <script src="app.js?v=santa_edition_final_10"></script>
+</body>
+</html>
