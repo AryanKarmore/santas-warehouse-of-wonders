@@ -1,6 +1,5 @@
 # AI-Based Route Planning for an Autonomous Warehouse Delivery Robot
 **Course Assignment: Artificial Intelligence**  
-**Submission Target:** `bmakhija@iiitn.ac.in` | **Suggested Repo Name:** `AI_Warehouse_PathPlanning_GroupXX`  
 **Deadline:** 18 November 2026
 
 ![Santa's 3D Digital Twin Overview](docs/figures/website_3d_santa_overview.png)
@@ -281,29 +280,4 @@ Then open `http://localhost:8080` in your web browser.
 - **Q: What happens if the trolley leaves no alternative path to the goal?**  
   *Answer:* When A* replans from the current position and the priority queue empties without finding the goal, the system catches the condition and raises an explicit `CRITICAL: No alternative path exists` alert.
 
----
 
-## 📧 Email Submission Draft
-
-**To:** `bmakhija@iiitn.ac.in`  
-**Subject:** `AI Group Coding Assignment Submission – Group XX`
-
-> Respected Sir,  
->  
-> Please find our submission for the **AI Group Coding Assignment: AI-Based Route Planning for a Warehouse Delivery Robot**.  
->  
-> **Group Details:**  
-> - **Group Number:** Group XX  
-> - **GitHub Repository:** `https://github.com/AryanKarmore/santas-warehouse-of-wonders`  
->  
-> **Member Roster & Contributions:**  
-> 1. **Aryan (BT24CSD009)** — Warehouse Environment & Problem Formulation (Tasks 1 & 2)  
-> 2. **Atharv (BT24CSD004)** — BFS & DFS Graph Search Implementation (Task 3)  
-> 3. **Aditya (BT24CSD018)** — Greedy Best-First Search & Manhattan Distance Heuristic Proof (Task 3)  
-> 4. **Raveena (BT24CSD022)** — A* Search & Weighted Path Cost Analysis (Task 3)  
-> 5. **Eshan (BT24CSD012)** (Group Representative) — Trolley Replanning, Benchmarking, Performance Evaluation & Three.js 3D Digital Twin (Tasks 4 & 5)  
->  
-> All source code, automated test suites, Matplotlib figures, and the interactive Three.js 3D Digital Twin are included in the repository.  
->  
-> Sincerely,  
-> Group XX Representative (Eshan)
