@@ -248,36 +248,4 @@ Then open `http://localhost:8080` in your web browser.
 
 ---
 
-## 🎓 Viva Voce Evaluation Guide (Member-by-Member Q&A)
-
-### Person 1: Aryan (Warehouse Grid & Problem Formulation)
-- **Q: How did you define the state space and step-cost function?**  
-  *Answer:* State is a discrete tuple $(r, c)$ bounded by the grid dimensions. Step cost is non-uniform: entering an open cell costs 1.0, while entering a crowded aisle costs 4.0. Shelves and restricted zones are modeled with infinite cost to enforce impassability.
-- **Q: Why are actions limited to orthogonal moves?**  
-  *Answer:* Warehouse robots navigate designated rectilinear aisles to avoid collisions with racking infrastructure; orthogonal moves align with the Manhattan distance metric.
-
-### Person 2: Atharv (BFS & DFS Search)
-- **Q: Why does BFS guarantee the fewest moves but not the lowest cost?**  
-  *Answer:* BFS explores the search tree level by level using a FIFO queue. The shallowest goal node is guaranteed to have the minimal edge count. However, BFS assumes uniform edge weights of 1; it cannot distinguish between a cell of cost 1 and cost 4.
-- **Q: How did you prevent cycles in DFS?**  
-  *Answer:* We implemented graph search using a `visited` set. Before expanding a state popped from the LIFO stack, we check if it has already been explored.
-
-### Person 3: Aditya (Greedy Best-First & Heuristic Proof)
-- **Q: Why is Manhattan distance admissible for this problem?**  
-  *Answer:* With orthogonal moves, Manhattan distance $|\Delta r| + |\Delta c|$ is the exact minimum number of steps needed in an obstacle-free grid. Since the lowest possible step cost is 1.0, $h(n) \le h^*(n)$ always holds.
-- **Q: What is the weakness of Greedy Best-First Search?**  
-  *Answer:* It prioritizes nodes solely based on $h(n)$, completely ignoring accumulated cost $g(n)$. This makes it vulnerable to stepping into high-cost crowded cells or getting stuck in dead ends.
-
-### Person 4: Raveena (BT24CSD022) (A* & Weighted Path Costs)
-- **Q: How does A* resolve the dilemma between a short crowded route and a long cheap detour?**  
-  *Answer:* A* minimizes $f(n) = g(n) + h(n)$. For the short crowded corridor, $g(n)$ accumulates $4 \times 4 = 16$. For the longer open detour, $g(n)$ accumulates $7 \times 1 = 7$. Because $7 < 16$, A* correctly chooses the longer, less costly route.
-- **Q: Why doesn't A* need to reopen closed nodes in our implementation?**  
-  *Answer:* Because Manhattan distance satisfies consistency (triangle inequality $|h(n) - h(n')| \le 1.0 \le c(n, a, n')$), the first time A* expands any node, it has already found the optimal cost to that node.
-
-### Person 5: Eshan (BT24CSD012) (Dynamic Replanning, 3D Web UI & Benchmarks)
-- **Q: How does the robot detect the trolley before colliding with it?**  
-  *Answer:* At each step, the robot simulates a forward proximity scan of the next cell in its planned path. If the ground truth map has a trolley at that location, the robot halts, updates its internal map, and triggers A* from its current coordinates.
-- **Q: What happens if the trolley leaves no alternative path to the goal?**  
-  *Answer:* When A* replans from the current position and the priority queue empties without finding the goal, the system catches the condition and raises an explicit `CRITICAL: No alternative path exists` alert.
-
 
