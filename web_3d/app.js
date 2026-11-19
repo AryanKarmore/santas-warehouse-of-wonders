@@ -43,43 +43,42 @@ class SoundFX {
       if (this.ctx.state === 'suspended') {
         this.ctx.resume();
       }
-      // 3 deep resonant jolly vocal pulses: "HO! HO! HO!"
-      const hoPitches = [140, 125, 110];
-      let t = this.ctx.currentTime + 0.05;
+      // 3 deep, booming, hearty jolly vocal pulses: "HO! HO! HO!"
+      const hoPitches = [135, 120, 105];
+      let t = this.ctx.currentTime + 0.02;
       hoPitches.forEach((baseFreq) => {
-        // Fundamental oscillator (chest voice)
-        const osc1 = this.ctx.createOscillator();
-        const osc2 = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        const filter = this.ctx.createBiquadFilter();
+        const oscChest = this.ctx.createOscillator();
+        const oscHarmonic = this.ctx.createOscillator();
+        const mainGain = this.ctx.createGain();
 
-        osc1.type = 'sawtooth';
-        osc1.frequency.setValueAtTime(baseFreq * 1.25, t);
-        osc1.frequency.exponentialRampToValueAtTime(baseFreq, t + 0.22);
+        // Vocal Formant Filter (human male "OH" vowel resonance ~580Hz with Q=3.8)
+        const formantFilter = this.ctx.createBiquadFilter();
+        formantFilter.type = 'lowpass';
+        formantFilter.frequency.setValueAtTime(620, t);
+        formantFilter.Q.setValueAtTime(3.8, t);
 
-        // Sub/harmonic overtone
-        osc2.type = 'triangle';
-        osc2.frequency.setValueAtTime(baseFreq * 2.0, t);
-        osc2.frequency.exponentialRampToValueAtTime(baseFreq * 1.8, t + 0.22);
+        oscChest.type = 'sawtooth';
+        oscChest.frequency.setValueAtTime(baseFreq * 1.25, t);
+        oscChest.frequency.exponentialRampToValueAtTime(baseFreq, t + 0.22);
 
-        // Vocal Formant Filter (simulates male vocal tract "O" vowel)
-        filter.type = 'bandpass';
-        filter.frequency.setValueAtTime(480, t);
-        filter.Q.setValueAtTime(3.5, t);
+        oscHarmonic.type = 'triangle';
+        oscHarmonic.frequency.setValueAtTime(baseFreq * 2.0, t);
+        oscHarmonic.frequency.exponentialRampToValueAtTime(baseFreq * 1.7, t + 0.22);
 
-        gain.gain.setValueAtTime(0.01, t);
-        gain.gain.linearRampToValueAtTime(0.40, t + 0.04);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.26);
+        // Bold, loud vocal envelope with crisp attack
+        mainGain.gain.setValueAtTime(0.01, t);
+        mainGain.gain.linearRampToValueAtTime(0.95, t + 0.03);
+        mainGain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
 
-        osc1.connect(filter);
-        osc2.connect(filter);
-        filter.connect(gain);
-        gain.connect(this.ctx.destination);
+        oscChest.connect(formantFilter);
+        oscHarmonic.connect(formantFilter);
+        formantFilter.connect(mainGain);
+        mainGain.connect(this.ctx.destination);
 
-        osc1.start(t);
-        osc2.start(t);
-        osc1.stop(t + 0.26);
-        osc2.stop(t + 0.26);
+        oscChest.start(t);
+        oscHarmonic.start(t);
+        oscChest.stop(t + 0.28);
+        oscHarmonic.stop(t + 0.28);
         t += 0.32;
       });
     } catch(e) {
@@ -129,19 +128,24 @@ class SoundFX {
     if (!this.enabled) return;
     try {
       this.init();
-      // 1. Play Santa's iconic jolly "HO! HO! HO!" vocal formants
+      // 1. Play Santa's loud, booming "HO! HO! HO!" immediately at goal arrival
       this.playHoHoHo();
 
-      // 2. Play the arrival theme song!
+      // 2. Play the arrival theme song (ducked initially so HO HO HO cuts through, then swells to full volume)
       if (this.goalAudio) {
         this.goalAudio.currentTime = 0;
-        this.goalAudio.volume = 0.85;
+        this.goalAudio.volume = 0.40;
         const playPromise = this.goalAudio.play();
         if (playPromise !== undefined) {
           playPromise.catch(err => {
             console.warn('Goal audio playback notification:', err);
           });
         }
+        setTimeout(() => {
+          if (this.goalAudio && !this.goalAudio.paused) {
+            this.goalAudio.volume = 0.85;
+          }
+        }, 950);
       }
     } catch(e) {
       console.warn('Victory audio error:', e);
