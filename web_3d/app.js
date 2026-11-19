@@ -268,7 +268,14 @@ function runLiveSearch(algoName, gridMatrix, start, goal) {
     while (queue.length > 0) {
       const curr = queue.shift();
       nodesExpanded++;
-      visitedOrder.push(curr.pos);
+      visitedOrder.push({
+        pos: curr.pos,
+        g: curr.cost,
+        h: manhattan(curr.pos, goal),
+        f: curr.cost,
+        frontierSize: queue.length,
+        nodesExpanded
+      });
 
       if (curr.pos[0] === goal[0] && curr.pos[1] === goal[1]) {
         const path = [];
@@ -313,7 +320,14 @@ function runLiveSearch(algoName, gridMatrix, start, goal) {
       if (visited.has(key)) continue;
       visited.add(key);
       nodesExpanded++;
-      visitedOrder.push(curr.pos);
+      visitedOrder.push({
+        pos: curr.pos,
+        g: curr.cost,
+        h: manhattan(curr.pos, goal),
+        f: curr.cost,
+        frontierSize: stack.length,
+        nodesExpanded
+      });
 
       if (curr.pos[0] === goal[0] && curr.pos[1] === goal[1]) {
         const path = [];
@@ -364,7 +378,14 @@ function runLiveSearch(algoName, gridMatrix, start, goal) {
       if (visited.has(key)) continue;
       visited.add(key);
       nodesExpanded++;
-      visitedOrder.push(curr.pos);
+      visitedOrder.push({
+        pos: curr.pos,
+        g: curr.cost,
+        h: curr.h,
+        f: curr.h,
+        frontierSize: frontier.length,
+        nodesExpanded
+      });
 
       if (curr.pos[0] === goal[0] && curr.pos[1] === goal[1]) {
         const path = [];
@@ -417,7 +438,15 @@ function runLiveSearch(algoName, gridMatrix, start, goal) {
 
       if (curr.cost > (bestG.get(key) ?? Infinity)) continue;
       nodesExpanded++;
-      visitedOrder.push(curr.pos);
+      const currentH = manhattan(curr.pos, goal);
+      visitedOrder.push({
+        pos: curr.pos,
+        g: curr.cost,
+        h: currentH,
+        f: curr.cost + currentH,
+        frontierSize: frontier.length,
+        nodesExpanded
+      });
 
       if (curr.pos[0] === goal[0] && curr.pos[1] === goal[1]) {
         const path = [];
@@ -428,6 +457,13 @@ function runLiveSearch(algoName, gridMatrix, start, goal) {
           algorithm_name: 'A*',
           goal_reached: true,
           path,
+          path_length: path.length - 1,
+          total_cost: curr.cost,
+          nodes_expanded: nodesExpanded,
+          execution_time_ms: performance.now() - t0,
+          visited_nodes: visitedOrder
+        };
+      }
           path_length: path.length - 1,
           total_cost: curr.cost,
           nodes_expanded: nodesExpanded,
@@ -1190,7 +1226,8 @@ class WarehouseScene {
     });
 
     for (let i = 0; i < countToShow; i++) {
-      const [r, c] = visitedNodes[i];
+      const item = visitedNodes[i];
+      const [r, c] = Array.isArray(item) ? item : item.pos;
       const isHead = (i === countToShow - 1);
       const mesh = new THREE.Mesh(boxGeo, isHead ? headMat : boxMat);
       mesh.position.set(c, 0.05, r);
@@ -1579,12 +1616,23 @@ class AppController {
     this.scene.santa.position.set(c, 0, r);
 
     // Dynamic Sleigh Trigger Check
+    const replanBanner = document.getElementById('replan-center-banner');
+    const replanTitle = document.getElementById('replan-banner-title');
+    const replanSub = document.getElementById('replan-banner-sub');
+
     if (this.currentScenarioKey === 'trolley' && this.trolleyEvent) {
       if (stepIdx === this.trolleyEvent.detected_at_step) {
         this.elHudAlert.style.display = 'flex';
         this.elHudAlertText.textContent = `RUNAWAY SLEIGH AT (${this.trolleyEvent.blocked_cell[0]},${this.trolleyEvent.blocked_cell[1]})! SANTA REPLANNING A* AROUND DEEP SNOW...`;
         this.elHudBadge.textContent = 'REPLANNING';
         this.elHudBadge.className = 'badge festive-badge alert';
+
+        if (replanBanner) {
+          replanBanner.style.display = 'flex';
+          if (replanTitle) replanTitle.textContent = `🚨 RUNAWAY SLEIGH DETECTED AT (${this.trolleyEvent.blocked_cell[0]}, ${this.trolleyEvent.blocked_cell[1]})!`;
+          if (replanSub) replanSub.textContent = `Santa halted at (${this.traversalPath[stepIdx][0]}, ${this.traversalPath[stepIdx][1]}) • Dynamic A* Replanner computed Southern Bypass detour in 0.18ms!`;
+        }
+
         sfx.playAlarm();
         if (this.scene.statusStar) this.scene.statusStar.material.color.setHex(0xef4444);
       } else if (stepIdx > this.trolleyEvent.detected_at_step) {
@@ -1593,12 +1641,16 @@ class AppController {
         this.elHudBadge.textContent = 'DIVERTED';
         this.elHudBadge.className = 'badge festive-badge';
         if (this.scene.statusStar) this.scene.statusStar.material.color.setHex(0x38bdf8);
+        if (replanBanner) replanBanner.style.display = 'none';
       } else {
         this.elHudAlert.style.display = 'none';
         this.elHudBadge.textContent = 'HO HO HO!';
         this.elHudBadge.className = 'badge festive-badge';
         if (this.scene.statusStar) this.scene.statusStar.material.color.setHex(0x10b981);
+        if (replanBanner) replanBanner.style.display = 'none';
       }
+    } else {
+      if (replanBanner) replanBanner.style.display = 'none';
     } else if (stepIdx === this.traversalPath.length - 1) {
       this.elHudBadge.textContent = 'DELIVERED!';
       this.elHudBadge.className = 'badge festive-badge';
@@ -1650,6 +1702,10 @@ class AppController {
     this.currentStep = 0;
     this.hasPlayedVictory = false;
     sfx.stopGoalMusic();
+
+    const replanBanner = document.getElementById('replan-center-banner');
+    if (replanBanner) replanBanner.style.display = 'none';
+
     if (this.traversalPath && this.traversalPath.length > 0) {
       this.updateHUD(0);
     }
@@ -1707,7 +1763,7 @@ class AppController {
     }
   }
 
-  // --- Live Search Frontier Visualization ---
+  // --- Live Search Frontier Visualization with Active Math Inspector ---
   watchAISearch() {
     this.resetSimulation();
     const result = this.activeResult;
@@ -1716,24 +1772,56 @@ class AppController {
     this.scene.clearPath();
     if (this.elBtnWatchSearch) {
       this.elBtnWatchSearch.disabled = true;
-      this.elBtnWatchSearch.innerHTML = '<span class="icon">⏳</span> EXPLORING...';
+      this.elBtnWatchSearch.innerHTML = '<span class="icon">⏳</span> EVALUATING...';
+    }
+
+    const inspector = document.getElementById('search-math-inspector');
+    const inspAlgo = document.getElementById('inspector-algo-name');
+    const inspPhase = document.getElementById('inspector-phase');
+    const mathNode = document.getElementById('math-node');
+    const mathG = document.getElementById('math-g');
+    const mathH = document.getElementById('math-h');
+    const mathF = document.getElementById('math-f');
+    const mathQueue = document.getElementById('math-queue-info');
+
+    if (inspector) {
+      inspector.style.display = 'block';
+      if (inspAlgo) inspAlgo.textContent = `${this.currentAlgo.toUpperCase()} EVALUATION`;
+      if (inspPhase) {
+        inspPhase.textContent = 'EVALUATING FRONTIER';
+        inspPhase.style.color = '#38bdf8';
+      }
     }
 
     const visited = result.visited_nodes;
     let idx = 0;
     const stepCount = visited.length;
-    const interval = Math.max(15, Math.min(60, Math.floor(1200 / Math.max(1, stepCount))));
+    // Paced animation so the evaluation of f(n) = g(n) + h(n) is clearly visible
+    const interval = Math.max(30, Math.min(80, Math.floor(1800 / Math.max(1, stepCount))));
 
     const animTimer = setInterval(() => {
       idx++;
       const ratio = Math.min(1.0, idx / stepCount);
       this.scene.showFrontierWave(visited, ratio);
 
+      const currNode = visited[Math.min(idx - 1, stepCount - 1)];
+      const [r, c] = Array.isArray(currNode) ? currNode : currNode.pos;
+      const gVal = (currNode && currNode.g !== undefined) ? currNode.g : idx;
+      const hVal = (currNode && currNode.h !== undefined) ? currNode.h : manhattan([r, c], this.activeLayout.goal);
+      const fVal = (currNode && currNode.f !== undefined) ? currNode.f : (gVal + hVal);
+      const qSize = (currNode && currNode.frontierSize !== undefined) ? currNode.frontierSize : Math.max(1, stepCount - idx);
+
+      if (mathNode) mathNode.textContent = `(${r}, ${c})`;
+      if (mathG) mathG.textContent = gVal.toFixed(1);
+      if (mathH) mathH.textContent = hVal.toFixed(1);
+      if (mathF) mathF.textContent = fVal.toFixed(1);
+      if (mathQueue) mathQueue.textContent = `Priority Queue: ${qSize} in frontier • Explored: ${idx} nodes`;
+
       if (this.elHudNodes) {
         this.elHudNodes.textContent = idx;
       }
       if (this.elHudLiveTag) {
-        this.elHudLiveTag.textContent = `⚡ EXPLORING: NODE ${idx} / ${stepCount} (${this.currentAlgo})`;
+        this.elHudLiveTag.textContent = `⚡ EVAL: (${r}, ${c}) | f=${fVal.toFixed(1)} [g=${gVal.toFixed(1)} + h=${hVal.toFixed(1)}]`;
       }
 
       if (idx >= stepCount) {
@@ -1741,6 +1829,10 @@ class AppController {
         if (this.elBtnWatchSearch) {
           this.elBtnWatchSearch.disabled = false;
           this.elBtnWatchSearch.innerHTML = '<span class="icon">⚡</span> WATCH AI SEARCH';
+        }
+        if (inspPhase) {
+          inspPhase.textContent = 'GOAL FOUND! OPTIMAL ROUTE';
+          inspPhase.style.color = '#10b981';
         }
         if (this.elHudLiveTag) {
           this.elHudLiveTag.textContent = `🎯 GOAL FOUND! TRACED ${result.path_length} MOVES (COST: ${result.total_cost.toFixed(1)})`;

@@ -159,6 +159,44 @@
     </div>
   </aside>
 
+  <!-- Live Search Algorithm Math Inspector Card -->
+  <div id="search-math-inspector" class="frosted-card search-inspector" style="display: none;">
+    <div class="inspector-header">
+      <span class="inspector-badge" id="inspector-algo-name">A* GRAPH SEARCH</span>
+      <span class="inspector-status" id="inspector-phase">EVALUATING FRONTIER</span>
+    </div>
+    <div class="inspector-math-grid">
+      <div class="math-stat">
+        <span class="math-label">CURRENT EVAL NODE</span>
+        <span class="math-val highlight-gold" id="math-node">(0, 0)</span>
+      </div>
+      <div class="math-stat">
+        <span class="math-label">g(n) [PATH COST]</span>
+        <span class="math-val" id="math-g">0.0</span>
+      </div>
+      <div class="math-stat">
+        <span class="math-label">h(n) [MANHATTAN]</span>
+        <span class="math-val" id="math-h">0.0</span>
+      </div>
+      <div class="math-stat">
+        <span class="math-label">f(n) = g(n) + h(n)</span>
+        <span class="math-val highlight-cyan" id="math-f">0.0</span>
+      </div>
+    </div>
+    <div class="inspector-footer">
+      <span id="math-queue-info">Priority Queue: 0 in frontier &bull; Explored: 0</span>
+    </div>
+  </div>
+
+  <!-- Real-Time Dynamic Replanning Banner Overlay -->
+  <div id="replan-center-banner" class="replan-banner" style="display: none;">
+    <div class="banner-icon">🚨</div>
+    <div class="banner-content">
+      <div class="banner-title" id="replan-banner-title">UNMAPPED OBSTACLE DETECTED AT (6, 2)!</div>
+      <div class="banner-sub" id="replan-banner-sub">Santa halted at (6, 1) &bull; Dynamic A* replanner calculating detour around runaway sleigh...</div>
+    </div>
+  </div>
+
   <!-- Bottom Floating Playback & Control Deck -->
   <footer class="control-deck frosted-card">
     <div class="deck-inner">
@@ -248,6 +286,6 @@
   <audio id="santa-goal-audio" src="santa_arrival.mp3" preload="auto"></audio>
 
   <!-- Main Application Script with Cache-Buster -->
-  <script src="app.js?v=santa_frontier_v14"></script>
+  <script src="app.js?v=inspector_replanning_v15"></script>
 </body>
 </html>

@@ -754,3 +754,126 @@ html, body {
   font-size: 0.72rem;
   color: var(--accent-snow);
 }
+
+/* ==========================================================================
+   Live Search Algorithm Inspector & Replanning Banner
+   ========================================================================== */
+.search-inspector {
+  position: absolute;
+  top: 76px;
+  right: 20px;
+  width: 320px;
+  background: rgba(10, 25, 47, 0.94);
+  border: 1px solid rgba(56, 189, 248, 0.55);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 25px rgba(56, 189, 248, 0.35);
+  border-radius: 12px;
+  padding: 14px 18px;
+  z-index: 100;
+  backdrop-filter: blur(14px);
+  pointer-events: none;
+}
+
+.inspector-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(186, 230, 253, 0.2);
+}
+
+.inspector-badge {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  letter-spacing: 0.5px;
+}
+
+.inspector-status {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--accent-ice);
+  text-transform: uppercase;
+}
+
+.inspector-math-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.math-stat {
+  background: rgba(15, 38, 70, 0.75);
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(186, 230, 253, 0.15);
+  display: flex;
+  flex-direction: column;
+}
+
+.math-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  letter-spacing: 0.5px;
+}
+
+.math-val {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.inspector-footer {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent-snow);
+  text-align: center;
+  padding-top: 4px;
+}
+
+/* Replanning Giant Banner */
+.replan-banner {
+  position: absolute;
+  top: 85px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(185, 28, 28, 0.95);
+  border: 2px solid #FEF08A;
+  box-shadow: 0 0 35px rgba(220, 38, 38, 0.85);
+  border-radius: 12px;
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 150;
+  backdrop-filter: blur(10px);
+  animation: pulseAlarm 0.8s infinite alternate ease-in-out;
+  pointer-events: none;
+}
+
+@keyframes pulseAlarm {
+  0% { transform: translateX(-50%) scale(1); box-shadow: 0 0 20px rgba(220, 38, 38, 0.7); }
+  100% { transform: translateX(-50%) scale(1.03); box-shadow: 0 0 45px rgba(239, 68, 68, 1); }
+}
+
+.banner-icon {
+  font-size: 2.2rem;
+}
+
+.banner-title {
+  font-family: var(--font-ui);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #FEF08A;
+  letter-spacing: 0.5px;
+}
+
+.banner-sub {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: #FFFFFF;
+}
