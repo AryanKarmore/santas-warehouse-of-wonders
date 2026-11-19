@@ -19,6 +19,7 @@ class SoundFX {
   constructor() {
     this.ctx = null;
     this.enabled = true;
+    this.goalAudio = null;
   }
 
   init() {
@@ -28,6 +29,10 @@ class SoundFX {
     }
     if (this.ctx && this.ctx.state === 'suspended') {
       this.ctx.resume();
+    }
+    if (!this.goalAudio) {
+      this.goalAudio = document.getElementById('santa-goal-audio') || new Audio('santa_arrival.mp3');
+      this.goalAudio.preload = 'auto';
     }
   }
 
@@ -121,31 +126,35 @@ class SoundFX {
   }
 
   playVictory() {
-    if (!this.enabled || !this.ctx) return;
+    if (!this.enabled) return;
     try {
+      this.init();
+      // 1. Play Santa's iconic jolly "HO! HO! HO!" vocal formants
       this.playHoHoHo();
-      // Christmas "Jingle Bells" melody: E5, E5, E5 | E5, E5, E5 | E5, G5, C5, D5, E5
-      const notes = [
-        { f: 659.25, d: 0.15 }, { f: 659.25, d: 0.15 }, { f: 659.25, d: 0.3 },
-        { f: 659.25, d: 0.15 }, { f: 659.25, d: 0.15 }, { f: 659.25, d: 0.3 },
-        { f: 659.25, d: 0.15 }, { f: 783.99, d: 0.15 }, { f: 523.25, d: 0.2 },
-        { f: 587.33, d: 0.15 }, { f: 659.25, d: 0.45 }
-      ];
-      let t = this.ctx.currentTime + 0.85; // Play after HO HO HO!
-      notes.forEach(n => {
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(n.f, t);
-        gain.gain.setValueAtTime(0.13, t);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + n.d);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(t);
-        osc.stop(t + n.d);
-        t += n.d + 0.05;
-      });
-    } catch(e) {}
+
+      // 2. Play the arrival theme song!
+      if (this.goalAudio) {
+        this.goalAudio.currentTime = 0;
+        this.goalAudio.volume = 0.85;
+        const playPromise = this.goalAudio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(err => {
+            console.warn('Goal audio playback notification:', err);
+          });
+        }
+      }
+    } catch(e) {
+      console.warn('Victory audio error:', e);
+    }
+  }
+
+  stopGoalMusic() {
+    if (this.goalAudio) {
+      try {
+        this.goalAudio.pause();
+        this.goalAudio.currentTime = 0;
+      } catch(e) {}
+    }
   }
 }
 
@@ -1307,6 +1316,7 @@ class AppController {
     this.elBtnEditMode = document.getElementById('btn-edit-mode');
     this.elHudLiveTag = document.getElementById('hud-live-tag');
     this.isEditMode = false;
+    this.hasPlayedVictory = false;
   }
 
   bindEvents() {
@@ -1354,6 +1364,9 @@ class AppController {
     this.elBtnAudio.addEventListener('click', () => {
       sfx.enabled = !sfx.enabled;
       this.elAudioIcon.textContent = sfx.enabled ? '🔔' : '🔕';
+      if (!sfx.enabled) {
+        sfx.stopGoalMusic();
+      }
     });
 
     this.elBtnTeam.addEventListener('click', () => {
@@ -1580,8 +1593,12 @@ class AppController {
       this.elHudBadge.textContent = 'DELIVERED!';
       this.elHudBadge.className = 'badge festive-badge';
       if (this.scene.statusStar) this.scene.statusStar.material.color.setHex(0xfbbf24);
-      sfx.playVictory();
+      if (!this.hasPlayedVictory) {
+        this.hasPlayedVictory = true;
+        sfx.playVictory();
+      }
     } else {
+      this.hasPlayedVictory = false;
       this.elHudAlert.style.display = 'none';
       this.elHudBadge.textContent = this.isPlaying ? 'DELIVERING' : 'READY';
       this.elHudBadge.className = 'badge festive-badge';
@@ -1602,6 +1619,8 @@ class AppController {
     if (!this.traversalPath || this.traversalPath.length === 0) return;
     if (this.currentStep >= this.traversalPath.length - 1) {
       this.currentStep = 0;
+      this.hasPlayedVictory = false;
+      sfx.stopGoalMusic();
     }
     this.isPlaying = true;
     this.elBtnPlay.textContent = '⏸ PAUSE';
@@ -1619,6 +1638,8 @@ class AppController {
   resetSimulation() {
     this.pauseSimulation();
     this.currentStep = 0;
+    this.hasPlayedVictory = false;
+    sfx.stopGoalMusic();
     if (this.traversalPath && this.traversalPath.length > 0) {
       this.updateHUD(0);
     }
