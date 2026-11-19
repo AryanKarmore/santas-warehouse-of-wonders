@@ -1177,17 +1177,23 @@ class WarehouseScene {
     if (!visitedNodes || visitedNodes.length === 0) return;
 
     const countToShow = Math.floor(visitedNodes.length * progressRatio);
-    const boxGeo = new THREE.BoxGeometry(0.42, 0.03, 0.42);
+    const boxGeo = new THREE.BoxGeometry(0.78, 0.04, 0.78);
     const boxMat = new THREE.MeshBasicMaterial({
       color: 0x38bdf8,
       transparent: true,
-      opacity: 0.45
+      opacity: 0.55
+    });
+    const headMat = new THREE.MeshBasicMaterial({
+      color: 0xfbbf24,
+      transparent: true,
+      opacity: 0.90
     });
 
     for (let i = 0; i < countToShow; i++) {
       const [r, c] = visitedNodes[i];
-      const mesh = new THREE.Mesh(boxGeo, boxMat);
-      mesh.position.set(c, 0.06, r);
+      const isHead = (i === countToShow - 1);
+      const mesh = new THREE.Mesh(boxGeo, isHead ? headMat : boxMat);
+      mesh.position.set(c, 0.05, r);
       this.frontierGroup.add(mesh);
     }
   }
