@@ -39,7 +39,7 @@ CELL_CHARS = {
     CellType.TROLLEY: 'T',
 }
 
-
+#It wraps each step inside your SearchNode
 class SearchNode:
     """Represents a node in the search tree."""
     def __init__(
@@ -110,14 +110,15 @@ class WarehouseGrid:
         start: Tuple[int, int] = (0, 0),
         goal: Tuple[int, int] = (0, 0)
     ):
-        self.height = height
-        self.width = width
-        self.start = start
-        self.goal = goal
+        self.height = height#rows
+        self.width = width#columns
+        self.start = start#packing station
+        self.goal = goal#dispatch area
         self.grid: List[List[CellType]] = [
             [CellType.OPEN for _ in range(width)] for _ in range(height)
         ]
 
+#checks if safe passable and get cell costs
     def is_in_bounds(self, r: int, c: int) -> bool:
         """Check if coordinates fall within warehouse boundaries."""
         return 0 <= r < self.height and 0 <= c < self.width
@@ -140,6 +141,8 @@ class WarehouseGrid:
         if self.is_in_bounds(r, c):
             self.grid[r][c] = cell_type
 
+
+#get neighbours
     def get_successors(self, state: Tuple[int, int]) -> List[Tuple[Tuple[int, int], str, float]]:
         """
         Transition Model: Returns all reachable neighbor states, the action taken,
@@ -155,6 +158,7 @@ class WarehouseGrid:
                 successors.append(((nr, nc), action, cost))
         return successors
 
+#if goal stop
     def is_goal(self, state: Tuple[int, int]) -> bool:
         """Goal Test: Returns True if state is the destination (Dispatch Area)."""
         return state == self.goal
@@ -186,7 +190,7 @@ class WarehouseGrid:
         )
         grid.grid = [[CellType(val) for val in row] for row in data["grid"]]
         return grid
-
+#debugging ASCII
     def render_ascii(
         self,
         path: Optional[List[Tuple[int, int]]] = None,
@@ -246,6 +250,7 @@ class WarehouseGrid:
 # Factory Functions for Standard Assignment Environments
 # =====================================================================
 
+#realistic warehpise dist for generalised benchmarking
 def create_standard_warehouse() -> WarehouseGrid:
     """
     Creates a realistic 12x12 warehouse layout featuring:
@@ -281,7 +286,7 @@ def create_standard_warehouse() -> WarehouseGrid:
 
     return wh
 
-
+#creating to prove that shortest distance is not equal to lowest cost
 def create_cost_vs_length_warehouse() -> WarehouseGrid:
     """
     Task 3 requirement:
@@ -310,7 +315,7 @@ def create_cost_vs_length_warehouse() -> WarehouseGrid:
 
     return wh
 
-
+#unmapped rogue trollet on A* to implement real time replanner
 def create_trolley_demonstration_warehouse() -> Tuple[WarehouseGrid, Tuple[int, int]]:
     """
     Task 4 requirement:

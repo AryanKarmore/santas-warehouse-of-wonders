@@ -156,6 +156,56 @@ def launch_web_ui(port: int = 8080):
         httpd.server_close()
 
 
+def run_custom_interactive_pathfinder():
+    print("\n--- [Interactive Live Pathfinding Test] ---")
+    grid = create_standard_warehouse()
+    print("Default Standard Warehouse (12x12). Start=(0,0), Goal=(11,11).")
+    
+    start_str = input("Enter custom start coordinate (r, c) or press ENTER for (0, 0): ").strip()
+    if start_str:
+        try:
+            r, c = [int(x.strip()) for x in start_str.replace("(", "").replace(")", "").split(",")]
+            if grid.is_in_bounds(r, c) and grid.is_passable(r, c):
+                grid.start = (r, c)
+                print(f"Start set to {grid.start}")
+            else:
+                print("Invalid or impassable start. Keeping default.")
+        except Exception:
+            print("Invalid format. Keeping default.")
+
+    goal_str = input("Enter custom goal coordinate (r, c) or press ENTER for (11, 11): ").strip()
+    if goal_str:
+        try:
+            r, c = [int(x.strip()) for x in goal_str.replace("(", "").replace(")", "").split(",")]
+            if grid.is_in_bounds(r, c) and grid.is_passable(r, c):
+                grid.goal = (r, c)
+                print(f"Goal set to {grid.goal}")
+            else:
+                print("Invalid or impassable goal. Keeping default.")
+        except Exception:
+            print("Invalid format. Keeping default.")
+
+    obs_str = input("Enter obstacle coordinates to block (e.g. '0,1; 0,2') or press ENTER: ").strip()
+    if obs_str:
+        for pair in obs_str.split(";"):
+            try:
+                r, c = [int(x.strip()) for x in pair.replace("(", "").replace(")", "").split(",")]
+                if grid.is_in_bounds(r, c):
+                    grid.set_cell(r, c, CellType.SHELF)
+                    print(f"Added obstacle at ({r}, {c})")
+            except Exception:
+                pass
+
+    print("\n[LIVE COMPUTATION] Running algorithms in real-time...")
+    results = BenchmarkRunner.run_all_algorithms(grid)
+    for res in results:
+        print(f"\n>>> Algorithm: {res.algorithm_name}")
+        print(f"Goal Reached: {res.goal_reached} | Moves: {res.path_length} | Cost: {res.total_cost:.1f} | Nodes: {res.nodes_expanded} | Time: {res.execution_time_ms:.3f} ms")
+        if res.goal_reached and res.algorithm_name == "A*":
+            print("\nASCII Map with A* Dynamically Computed Path (*):")
+            print(grid.render_ascii(path=res.path))
+
+
 def main():
     parser = argparse.ArgumentParser(description="AI Warehouse Robot Route Planning System")
     parser.add_argument("--all", action="store_true", help="Run complete benchmark suite and generate artifacts")
@@ -180,10 +230,11 @@ def main():
         print("  3. Run Task 4 Demo: Dynamic Trolley Obstacle & A* Replanning")
         print("  4. Run Task 4 Edge Case: Trapped Robot (No Route Exists)")
         print("  5. Run Complete Benchmark Suite & Export Figures")
-        print("  6. Launch 3D Three.js Interactive Warehouse Web App")
-        print("  7. Exit")
+        print("  6. Test Custom Live Pathfinding (Arbitrary Start/Goal & Obstacles)")
+        print("  7. Launch 3D Three.js Interactive Warehouse Web App")
+        print("  8. Exit")
 
-        choice = input("\nEnter choice (1-7): ").strip()
+        choice = input("\nEnter choice (1-8): ").strip()
         if choice == '1':
             run_standard_experiment()
         elif choice == '2':
@@ -195,12 +246,14 @@ def main():
         elif choice == '5':
             generate_all_figures()
         elif choice == '6':
-            launch_web_ui(args.port)
+            run_custom_interactive_pathfinder()
         elif choice == '7':
+            launch_web_ui(args.port)
+        elif choice == '8':
             print("Exiting. Good luck with the evaluation!")
             break
         else:
-            print("Invalid selection. Please choose 1-7.")
+            print("Invalid selection. Please choose 1-8.")
 
 
 if __name__ == "__main__":

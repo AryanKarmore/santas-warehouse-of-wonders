@@ -307,7 +307,7 @@
         "path_length": 22,
         "total_cost": 37.0,
         "nodes_expanded": 109,
-        "execution_time_ms": 0.569,
+        "execution_time_ms": 0.382,
         "visited_nodes": [
           [
             0,
@@ -1041,7 +1041,7 @@
         "path_length": 56,
         "total_cost": 86.0,
         "nodes_expanded": 57,
-        "execution_time_ms": 0.287,
+        "execution_time_ms": 0.197,
         "visited_nodes": [
           [
             0,
@@ -1397,7 +1397,7 @@
         "path_length": 22,
         "total_cost": 37.0,
         "nodes_expanded": 23,
-        "execution_time_ms": 0.137,
+        "execution_time_ms": 0.105,
         "visited_nodes": [
           [
             0,
@@ -1617,7 +1617,7 @@
         "path_length": 22,
         "total_cost": 25.0,
         "nodes_expanded": 65,
-        "execution_time_ms": 0.391,
+        "execution_time_ms": 0.268,
         "visited_nodes": [
           [
             0,
@@ -1978,7 +1978,7 @@
         "path_length": 5,
         "total_cost": 17.0,
         "nodes_expanded": 15,
-        "execution_time_ms": 0.083,
+        "execution_time_ms": 0.13,
         "visited_nodes": [
           [
             1,
@@ -2081,7 +2081,7 @@
         "path_length": 5,
         "total_cost": 17.0,
         "nodes_expanded": 6,
-        "execution_time_ms": 0.031,
+        "execution_time_ms": 0.036,
         "visited_nodes": [
           [
             1,
@@ -2148,7 +2148,7 @@
         "path_length": 5,
         "total_cost": 17.0,
         "nodes_expanded": 6,
-        "execution_time_ms": 0.041,
+        "execution_time_ms": 0.103,
         "visited_nodes": [
           [
             1,
@@ -2225,7 +2225,7 @@
         "path_length": 7,
         "total_cost": 7.0,
         "nodes_expanded": 9,
-        "execution_time_ms": 0.061,
+        "execution_time_ms": 0.084,
         "visited_nodes": [
           [
             1,
@@ -2552,7 +2552,7 @@
           "replan_successful": true,
           "new_subpath_length": 11,
           "new_subpath_cost": 11.0,
-          "time_taken_ms": 0.092
+          "time_taken_ms": 0.179
         }
       ],
       "trolley_positions": [
@@ -2696,7 +2696,7 @@
           "replan_successful": false,
           "new_subpath_length": 0,
           "new_subpath_cost": 0.0,
-          "time_taken_ms": 0.056
+          "time_taken_ms": 0.137
         }
       ],
       "trolley_positions": [

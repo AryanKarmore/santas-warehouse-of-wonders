@@ -1301,6 +1301,12 @@ class AppController {
     this.elBtnTeam = document.getElementById('btn-team-modal');
     this.elBtnCloseModal = document.getElementById('btn-close-modal');
     this.elSandboxTools = document.getElementById('sandbox-tools');
+
+    // Live Search & Edit Interactive Controls
+    this.elBtnWatchSearch = document.getElementById('btn-watch-search');
+    this.elBtnEditMode = document.getElementById('btn-edit-mode');
+    this.elHudLiveTag = document.getElementById('hud-live-tag');
+    this.isEditMode = false;
   }
 
   bindEvents() {
@@ -1360,6 +1366,42 @@ class AppController {
       if (e.target === this.elTeamModal) this.elTeamModal.style.display = 'none';
     });
 
+    // Watch AI Search Frontier Wave Button
+    if (this.elBtnWatchSearch) {
+      this.elBtnWatchSearch.addEventListener('click', () => {
+        sfx.init();
+        this.watchAISearch();
+      });
+    }
+
+    // Toggle Live Map Editing Mode
+    if (this.elBtnEditMode) {
+      this.elBtnEditMode.addEventListener('click', () => {
+        this.isEditMode = !this.isEditMode;
+        if (this.isEditMode) {
+          this.elBtnEditMode.classList.add('highlight-gold');
+          this.elBtnEditMode.innerHTML = '<span class="icon">✏️</span> EDITING ON';
+          if (this.elSandboxTools) this.elSandboxTools.style.display = 'block';
+          if (this.elHudLiveTag) {
+            this.elHudLiveTag.textContent = '✏️ EDIT MODE ACTIVE: CLICK ANY TILE TO EDIT!';
+            this.elHudLiveTag.style.color = '#fbbf24';
+            this.elHudLiveTag.style.borderColor = '#fbbf24';
+          }
+        } else {
+          this.elBtnEditMode.classList.remove('highlight-gold');
+          this.elBtnEditMode.innerHTML = '<span class="icon">✏️</span> EDIT MAP';
+          if (this.elSandboxTools && this.currentScenarioKey !== 'custom') {
+            this.elSandboxTools.style.display = 'none';
+          }
+          if (this.elHudLiveTag) {
+            this.elHudLiveTag.textContent = '⚡ LIVE SEARCH: ACTIVE';
+            this.elHudLiveTag.style.color = '#38bdf8';
+            this.elHudLiveTag.style.borderColor = 'rgba(56, 189, 248, 0.35)';
+          }
+        }
+      });
+    }
+
     // Sandbox Brush Buttons
     document.querySelectorAll('.brush-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -1369,12 +1411,12 @@ class AppController {
       });
     });
 
-    // Raycaster for Interactive Sandbox Grid Clicking
+    // Raycaster for Interactive Sandbox Grid Clicking (Enabled on ANY map in edit mode)
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
     this.scene.renderer.domElement.addEventListener('pointerdown', (e) => {
-      if (this.currentScenarioKey !== 'custom') return;
+      if (this.currentScenarioKey !== 'custom' && !this.isEditMode) return;
       mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
       raycaster.setFromCamera(mouse, this.scene.camera);
@@ -1634,10 +1676,57 @@ class AppController {
     }
   }
 
-  // --- Interactive Sandbox Tool ---
+  // --- Live Search Frontier Visualization ---
+  watchAISearch() {
+    this.resetSimulation();
+    const result = this.activeResult;
+    if (!result || !result.visited_nodes || result.visited_nodes.length === 0) return;
+
+    this.scene.clearPath();
+    if (this.elBtnWatchSearch) {
+      this.elBtnWatchSearch.disabled = true;
+      this.elBtnWatchSearch.innerHTML = '<span class="icon">⏳</span> EXPLORING...';
+    }
+
+    const visited = result.visited_nodes;
+    let idx = 0;
+    const stepCount = visited.length;
+    const interval = Math.max(15, Math.min(60, Math.floor(1200 / Math.max(1, stepCount))));
+
+    const animTimer = setInterval(() => {
+      idx++;
+      const ratio = Math.min(1.0, idx / stepCount);
+      this.scene.showFrontierWave(visited, ratio);
+
+      if (this.elHudNodes) {
+        this.elHudNodes.textContent = idx;
+      }
+      if (this.elHudLiveTag) {
+        this.elHudLiveTag.textContent = `⚡ EXPLORING: NODE ${idx} / ${stepCount} (${this.currentAlgo})`;
+      }
+
+      if (idx >= stepCount) {
+        clearInterval(animTimer);
+        if (this.elBtnWatchSearch) {
+          this.elBtnWatchSearch.disabled = false;
+          this.elBtnWatchSearch.innerHTML = '<span class="icon">⚡</span> WATCH AI SEARCH';
+        }
+        if (this.elHudLiveTag) {
+          this.elHudLiveTag.textContent = `🎯 GOAL FOUND! TRACED ${result.path_length} MOVES (COST: ${result.total_cost.toFixed(1)})`;
+        }
+        this.scene.drawRouteSpline(this.traversalPath);
+        sfx.playVictory();
+      }
+    }, interval);
+  }
+
+  // --- Interactive Real-Time Grid Clicking ---
   onCellClicked(r, c) {
-    if (this.currentScenarioKey !== 'custom') return;
+    if (this.currentScenarioKey !== 'custom' && !this.isEditMode) return;
     const layout = this.activeLayout;
+
+    if (r === layout.start[0] && c === layout.start[1] && this.sandboxBrush !== 'start') return;
+    if (r === layout.goal[0] && c === layout.goal[1] && this.sandboxBrush !== 'goal') return;
 
     if (this.sandboxBrush === 'shelf') {
       layout.grid[r][c] = (layout.grid[r][c] === CELL.SHELF) ? CELL.OPEN : CELL.SHELF;
@@ -1655,6 +1744,26 @@ class AppController {
 
     this.scene.buildWarehouse(layout);
     this.computeAlgorithmMetrics();
+    sfx.playStep();
+
+    if (this.elHudLiveTag) {
+      if (this.activeResult && this.activeResult.goal_reached) {
+        this.elHudLiveTag.textContent = `⚡ DYNAMIC RECALC: ${this.activeResult.execution_time_ms.toFixed(2)}ms | ${this.activeResult.nodes_expanded} NODES | MOVES: ${this.activeResult.path_length}`;
+        this.elHudLiveTag.style.borderColor = '#fbbf24';
+        this.elHudLiveTag.style.color = '#fbbf24';
+      } else {
+        this.elHudLiveTag.textContent = `⚠️ NO PATH POSSIBLE (BLOCKED BY WALLS)`;
+        this.elHudLiveTag.style.borderColor = '#ef4444';
+        this.elHudLiveTag.style.color = '#ef4444';
+      }
+      setTimeout(() => {
+        if (this.elHudLiveTag && !this.isEditMode) {
+          this.elHudLiveTag.textContent = '⚡ LIVE SEARCH: ACTIVE';
+          this.elHudLiveTag.style.borderColor = 'rgba(56, 189, 248, 0.35)';
+          this.elHudLiveTag.style.color = '#38bdf8';
+        }
+      }, 3000);
+    }
   }
 }
 
